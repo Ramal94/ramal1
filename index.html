@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обратный отсчёт</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            font-size: 2rem;
+            overflow: hidden;
+        }
+        #message {
+            text-align: center;
+            animation: none;
+        }
+        /* Эффект тряски текста */
+        .shake {
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -2px) rotate(-1deg); }
+            50% { transform: translate(-3px, 0px) rotate(1deg); }
+            75% { transform: translate(3px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -1px) rotate(-1deg); }
+        }
+        /* Эффект вспышки экрана */
+        .flash {
+            animation: flash 0.1s linear infinite;
+        }
+        @keyframes flash {
+            0%, 100% { background-color: #000; }
+            50% { background-color: #ff0000; }
+        }
+        /* Эффект исчезновения текста */
+        .fade {
+            animation: fadeOut 1.5s forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        /* Визуальный взрыв */
+        .explode {
+            font-size: 4rem;
+            color: red;
+            animation: explode 0.7s forwards;
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(2); opacity: 0.5; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="message">Ваш телефон сломается через 3</div>
+    <audio id="scarySound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+    <audio id="scream" src="https://www.soundjay.com/human/scream-female-1.mp3"></audio>
+
+    <script>
+        const messages = [
+            "Ваш телефон сломается через 2",
+            "Ваш телефон сломается через 1",
+            "БУМ!"
+        ];
+        let index = 0;
+
+        const messageDiv = document.getElementById("message");
+        const scarySound = document.getElementById("scarySound");
+        const scream = document.getElementById("scream");
+
+        const interval = setInterval(() => {
+            if (index < messages.length) {
+                messageDiv.textContent = messages[index];
+
+                // Добавляем эффекты в последний момент
+                if (index === messages.length - 1) {
+                    document.body.classList.add("flash");
+                    messageDiv.classList.add("shake");
+                    scarySound.play(); // Зловещий звук перед взрывом
+
+                    setTimeout(() => {
+                        // "Взрыв" текста
+                        messageDiv.textContent = "БУМ!!!";
+                        messageDiv.classList.add("explode");
+                        scream.play(); // Пугающий крик
+
+                        setTimeout(() => {
+                            // Затемнение экрана
+                            messageDiv.textContent = "";
+                            document.body.classList.remove("flash");
+                            document.body.style.backgroundColor = "#000";
+
+                            setTimeout(() => {
+                                // Финальное сообщение
+                                messageDiv.classList.remove("explode");
+                                messageDiv.textContent = "Шутка! Ваш телефон в порядке!";
+                                messageDiv.style.color = "#0f0";
+                                messageDiv.style.fontSize = "2rem";
+                            }, 3000);
+                        }, 1500);
+                    }, 1000);
+                }
+
+                index++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
